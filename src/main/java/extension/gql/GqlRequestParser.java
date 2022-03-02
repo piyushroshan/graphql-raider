@@ -19,9 +19,13 @@ public class GqlRequestParser {
   }
 
   private String tryRead(String json, String attribute) {
+    JsonElement element;
     try{
-      JsonParser parser = new JsonParser();
-      JsonElement element = parser.parse(json).getAsJsonObject().get(attribute);
+      try {
+        element = JsonParser.parseString(json).getAsJsonArray().get(0).getAsJsonObject().get(attribute);
+      } catch (Exception e) {
+        element = JsonParser.parseString(json).getAsJsonObject().get(attribute);
+      }
       if(element instanceof JsonPrimitive){
         return element.getAsString();
       } else if(element instanceof JsonNull){
